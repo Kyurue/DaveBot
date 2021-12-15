@@ -1,6 +1,5 @@
 module.exports = {
     name: "ping",
-    aliases: 'p',
     run: async (client, message, args) => {
         function sleep(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));

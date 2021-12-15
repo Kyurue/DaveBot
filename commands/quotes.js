@@ -5,28 +5,40 @@ module.exports = {
     name: "quotes",
     aliases: 'qs',
     run: async (client, message, args) => {
+        const server = message.guild.id
         const arguments = message.content.slice(args.length).trim().split(' ') 
         if(arguments[1] == null) {
-            // Get all server quotes
-            const server = message.guild.id
-            // Make MongoDB connection to get all quotes by serverid
-            const data = {
-                serverId: server
-            }
-
-            const apiConfig = {
-                method: 'POST',
-                url: `https://eu-central-1.aws.data.mongodb-api.com/app/dave-primp/endpoint/getQuotes?secret=${config.secret}`,
-                headers: { 
-                    'Content-type': 'application/json',        
-                },
-                data: data
-            }
-
-            const request = await axios(apiConfig)
-            console.log(request.data)
+            const quotes = await getAll(server)
+            console.log(quotes)
         } else {
-            message.channel.send("get all quotes by username")
+            const quotes = await getAll(server, arguments[1])
+            console.log(quotes)
         }
     }
+}
+
+
+async function getAll(server, user) {
+
+    /* 
+        * Make request to mongodb to get all quotes by server
+        * @param serverId String
+    */
+
+    const data = {
+        serverId: server,
+        user: user
+    }
+
+    const apiConfig = {
+        method: 'POST',
+        url: `https://eu-central-1.aws.data.mongodb-api.com/app/dave-primp/endpoint/getQuotes?secret=${config.secret}`,
+        headers: { 
+            'Content-type': 'application/json',        
+        },
+        data: data
+    }
+
+    const request = await axios(apiConfig)
+    return request.data
 }

@@ -26,11 +26,13 @@ fs.readdir("./commands/", (err, files) => {
         console.log(`Loaded ${file}`)
 
         /* Put aliases in an array otherwise forEach won't work */
-        const cmdArr = Object.assign([], cmd.aliases)
+        const cmdArr = []
+        cmdArr.push(cmd.aliases)
         client.commands.set(cmd.name, cmd)
 
         /* If there are any alisases it will loop through every alias and make it available */
         if(cmdArr) {
+            console.log(cmdArr)
             cmdArr.forEach(alias => client.aliases.set(alias, cmd.name))
         }
 
@@ -50,7 +52,7 @@ client.on("messageCreate", async message => {
     /* change everything to lower case so you don't have to worry about that */
     const command = args.shift().toLowerCase()
 
-    /* Load in alisases for commands */
+    /* Load in aliasses for commands */
     const cmd = client.commands.get(command) || client.commands.get(client.aliases.get(command))
 
     
